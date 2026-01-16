@@ -9,6 +9,7 @@ const API_URL = 'http://localhost:8000/api/tasks/';
 function App() {
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     fetchTasks();
@@ -62,20 +63,74 @@ function App() {
     }
   };
 
+  const filteredTasks = tasks.filter(task => {
+    if (filter === 'active') return !task.completed;
+    if (filter === 'completed') return task.completed;
+    return true;
+  });
+
+  const stats = {
+    total: tasks.length,
+    active: tasks.filter(t => !t.completed).length,
+    completed: tasks.filter(t => t.completed).length
+  };
+
   return (
     <div className="app">
       <div className="header">
-        <h1>📝 To-Do App</h1>
-        <p>Organize your tasks efficiently</p>
+        <div className="header-content">
+          <div className="logo">✓</div>
+          <div>
+            <h1>TaskFlow</h1>
+            <p>Stay organized, stay productive</p>
+          </div>
+        </div>
       </div>
       <div className="container">
+        <div className="stats-bar">
+          <div className="stat-item">
+            <span className="stat-number">{stats.total}</span>
+            <span className="stat-label">Total</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-number">{stats.active}</span>
+            <span className="stat-label">Active</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-number">{stats.completed}</span>
+            <span className="stat-label">Done</span>
+          </div>
+        </div>
+
         <TaskForm
           onSubmit={editingTask ? updateTask : createTask}
           editingTask={editingTask}
           onCancel={() => setEditingTask(null)}
         />
+
+        <div className="filter-tabs">
+          <button 
+            className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
+            onClick={() => setFilter('all')}
+          >
+            All Tasks
+          </button>
+          <button 
+            className={`filter-tab ${filter === 'active' ? 'active' : ''}`}
+            onClick={() => setFilter('active')}
+          >
+            Active
+          </button>
+          <button 
+            className={`filter-tab ${filter === 'completed' ? 'active' : ''}`}
+            onClick={() => setFilter('completed')}
+          >
+            Completed
+          </button>
+        </div>
+
         <TaskList
-          tasks={tasks}
+          tasks={filteredTasks}
           onToggleComplete={toggleComplete}
           onEdit={setEditingTask}
           onDelete={deleteTask}
