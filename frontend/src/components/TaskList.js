@@ -1,7 +1,16 @@
 import React from 'react';
 import TaskItem from './TaskItem';
 
-function TaskList({ tasks, onToggleComplete, onEdit, onDelete }) {
+function TaskList({ tasks, onToggleComplete, onEdit, onDelete, onDuplicate, loading }) {
+  if (loading) {
+    return (
+      <div className="loading-state">
+        <div className="spinner"></div>
+        <p>Loading tasks...</p>
+      </div>
+    );
+  }
+
   if (tasks.length === 0) {
     return (
       <div className="empty-state">
@@ -20,6 +29,7 @@ function TaskList({ tasks, onToggleComplete, onEdit, onDelete }) {
           onToggleComplete={onToggleComplete}
           onEdit={onEdit}
           onDelete={onDelete}
+          onDuplicate={onDuplicate}
         />
       ))}
     </div>

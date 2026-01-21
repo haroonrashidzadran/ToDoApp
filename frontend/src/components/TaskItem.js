@@ -1,6 +1,6 @@
 import React from 'react';
 
-function TaskItem({ task, onToggleComplete, onEdit, onDelete }) {
+function TaskItem({ task, onToggleComplete, onEdit, onDelete, onDuplicate }) {
   const formatDate = (dateString) => {
     if (!dateString) return null;
     const date = new Date(dateString);
@@ -29,10 +29,16 @@ function TaskItem({ task, onToggleComplete, onEdit, onDelete }) {
           <span>📅 Due: {formatDate(task.due_date)}</span>
         )}
         <span>🕒 Created: {formatDate(task.created_at)}</span>
+        {task.category && (
+          <span>🏷️ {task.category}</span>
+        )}
       </div>
       <div className="task-actions">
         <button className="btn btn-edit" onClick={() => onEdit(task)}>
           Edit
+        </button>
+        <button className="btn btn-duplicate" onClick={() => onDuplicate(task)}>
+          Duplicate
         </button>
         <button className="btn btn-delete" onClick={() => onDelete(task.id)}>
           Delete

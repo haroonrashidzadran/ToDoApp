@@ -5,8 +5,10 @@ function TaskForm({ onSubmit, editingTask, onCancel }) {
     title: '',
     description: '',
     priority: 'medium',
-    due_date: ''
+    due_date: '',
+    category: 'General'
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (editingTask) {
@@ -14,14 +16,28 @@ function TaskForm({ onSubmit, editingTask, onCancel }) {
         title: editingTask.title,
         description: editingTask.description || '',
         priority: editingTask.priority,
-        due_date: editingTask.due_date || ''
+        due_date: editingTask.due_date || '',
+        category: editingTask.category || 'General'
       });
     }
   }, [editingTask]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.title.trim()) return;
+    const newErrors = {};
+    
+    if (!formData.title.trim()) {
+      newErrors.title = 'Title is required';
+    }
+    if (formData.title.length > 200) {
+      newErrors.title = 'Title must be less than 200 characters';
+    }
+    if (formData.due_date && new Date(formData.due_date) < new Date().setHours(0,0,0,0)) {
+      newErrors.due_date = 'Due date cannot be in the past';
+    }
+    
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
 
     const taskData = {
       ...formData,
@@ -34,7 +50,8 @@ function TaskForm({ onSubmit, editingTask, onCancel }) {
       onSubmit(taskData);
     }
 
-    setFormData({ title: '', description: '', priority: 'medium', due_date: '' });
+    setFormData({ title: '', description: '', priority: 'medium', due_date: '', category: 'General' });
+    setErrors({});
   };
 
   const handleChange = (e) => {
@@ -54,8 +71,10 @@ function TaskForm({ onSubmit, editingTask, onCancel }) {
           value={formData.title}
           onChange={handleChange}
           placeholder="Enter task title"
+          className={errors.title ? 'error' : ''}
           required
         />
+        {errors.title && <span className="error-message">{errors.title}</span>}
       </div>
       <div className="form-group">
         <label>Description</label>
@@ -68,6 +87,16 @@ function TaskForm({ onSubmit, editingTask, onCancel }) {
       </div>
       <div className="form-row">
         <div className="form-group">
+          <label>Category</label>
+          <input
+            type="text"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            placeholder="Task category"
+          />
+        </div>
+        <div className="form-group">
           <label>Priority</label>
           <select name="priority" value={formData.priority} onChange={handleChange}>
             <option value="low">Low</option>
@@ -75,6 +104,8 @@ function TaskForm({ onSubmit, editingTask, onCancel }) {
             <option value="high">High</option>
           </select>
         </div>
+      </div>
+      <div className="form-row">
         <div className="form-group">
           <label>Due Date</label>
           <input
@@ -82,7 +113,9 @@ function TaskForm({ onSubmit, editingTask, onCancel }) {
             name="due_date"
             value={formData.due_date}
             onChange={handleChange}
+            className={errors.due_date ? 'error' : ''}
           />
+          {errors.due_date && <span className="error-message">{errors.due_date}</span>}
         </div>
       </div>
       <div style={{ display: 'flex', gap: '10px' }}>
