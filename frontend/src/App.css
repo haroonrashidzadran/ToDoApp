@@ -224,12 +224,12 @@
 
 .filter-tab:hover {
   color: #f3f4f6;
-  background: rgba(245, 158, 11, 0.1);
+  background: rgba(59, 130, 246, 0.1);
 }
 
 .filter-tab.active {
   background: #374151;
-  color: #f59e0b;
+  color: #3b82f6;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
