@@ -249,7 +249,7 @@
 
 .task-item:hover {
   border-color: #4b5563;
-  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
 }
 
 .task-item.completed {
